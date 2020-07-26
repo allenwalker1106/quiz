@@ -79,7 +79,7 @@ body{
     transform: translateY(-2px);
 }
 
-#question-content,#question_index{
+#question-content,#question_index,#score{
     color: white;
     text-align: center;
 }
