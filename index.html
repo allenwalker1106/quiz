@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+</head>
+
+<body>
+
+    <div id='game-window' class='game-container'>
+        <div id="details-container" class="detail">
+            <button id="close-button" onclick="returnQuestion()">&#8249</button>
+            <h1 class="detail_header">Detail</h1>
+            <div id="detail_content" class="detail_content">
+                
+            </div>
+        </div>
+        <h1 id="question_title" class="question-title">
+            勾 噲
+        </h1>
+        <p id="question_index" class="question_index"></p>
+        <div id="game-container" class="container">
+        </div>
+
+    </div>
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+    <script src="index.js"></script>
+    <script type="text/javascript" src="data.js"></script>
+    <script>
+        console.log(data);
+
+        let questionIndex =0;
+        let buttonData;
+        let score =0;
+
+        function laodQuestion(index){
+
+        }
+
+            function displayDetail(){
+                document.getElementById('game-window').classList.add('show_detail');
+                document.getElementById('game-container').classList.add('show_detail');
+                document.getElementById('question_title').classList.add('show_detail');
+                document.getElementById('details-container').classList.add('show_detail');
+                document.getElementById('question_index').classList.add('show_detail');
+                let details_win = document.getElementById('detail_content');
+                let detail_content = data[questionIndex].description;
+                for(i=0;i<detail_content.length;i++){
+                    details_win.appendChild(document.createTextNode(detail_content[i]));    
+                }
+            }
+
+
+            function returnQuestion(){
+                document.getElementById('game-window').classList.remove('show_detail');
+                document.getElementById('game-container').classList.remove('show_detail');
+                document.getElementById('question_title').classList.remove('show_detail');
+                document.getElementById('details-container').classList.remove('show_detail');
+                document.getElementById('question_index').classList.remove('show_detail');
+            }
+
+            function answerCheck(){
+                
+                if(buttonData==data[questionIndex].answerIndex){
+                    questionIndex=(questionIndex+1)%data.length;
+                    alert('correct');
+                    score +=100;
+                    loadQuestion(questionIndex)
+
+                }
+                else{
+                    alert('false');
+                }
+            }
+            function setButtonDataFunction(index){
+                button_data=index;
+            }
+
+            getIndex=(index,self)=>{
+                buttonData = index;
+                let buttonOption=document.getElementsByClassName('option-button');
+                for(i=0;i<buttonOption.length;i++)
+                    buttonOption[i].style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+                console.log(buttonData)
+                self.style.backgroundColor = "tomato";
+            }
+
+            function loadQuestion( index) {
+                document.getElementById('question_index').innerHTML=`
+                    ${index+1}/${data.length} câu
+                `
+                if (data.length) {
+                    let game_window = document.getElementById('game-container');
+                    game_window.innerHTML = `
+                <div  class="question-container">
+                    <p id='question-content'>${data[index] && data[index].questionContent}</p>
+                </div>
+                <div class='option-container'>
+                    <div class="row">
+                        <button class="option-button" onClick="getIndex(0,this)" id="button1">${data[index] && data[index].answer[0]}</button>
+                        <button class="option-button" onClick="getIndex(1,this)" id="button2">${data[index] && data[index].answer[1]}</button>
+                    </div>
+                    <div class="row">
+                        <button class="option-button" onClick="getIndex(2,this)" id="button3">${data[index] && data[index].answer[2]}</button>
+                        <button class="option-button" onClick="getIndex(3,this)"  id="button4">${data[index] && data[index].answer[3]}</button>
+                    </div>
+                    <div class="row">
+                        <button id="detail-button" class="alternative_button" onClick="displayDetail()" >Detial</button>
+                        <button id="submit-button" class="alternative_button" onClick="answerCheck()" >Kiểm tra</button>
+                    </div>
+                </div>
+                    `
+                }
+            }
+
+            loadQuestion(questionIndex);
+        // })
+    
+    </script>
+
+</body>
+
+</html>
